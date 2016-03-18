@@ -84,9 +84,11 @@ bool detect (char* str1, char* str2, size_t len){
     }
     for (int k = 0; k < len ; ++k) {
         if (buffer[k] != str2[k]){
+            delete[](buffer);
             return false;
         }
     }
+    delete[](buffer);
     return true;
 }
 
@@ -101,5 +103,7 @@ int main() {
         return 0;
     }
     std::cout << (detect(str1, str2, strlen(str1)) ? "YES" : "NO");
+    delete[](str1);
+    delete[](str2);
     return 0;
 }

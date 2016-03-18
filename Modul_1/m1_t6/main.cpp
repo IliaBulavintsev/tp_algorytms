@@ -60,9 +60,5 @@ int main() {
     std::cin >> n;
     assert( n > 0 );
     std::cout << count(n);
-
-//    for (int i = 1; i < 501; ++i) {
-//        std::cout << i << " - " << count(i) << "\n";
-//    }
     return 0;
 }
