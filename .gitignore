@@ -1,3 +1,4 @@
-Modul_1/**/*.txt
-Module_1/**/*.out
-Module_1/**/Makefile
+*/**/*.txt
+*/**/*.out
+*/**/*Makefile
+*/**/.idea
