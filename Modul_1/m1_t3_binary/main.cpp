@@ -23,22 +23,22 @@ bool bin_search(int *a, int left, int right, int value){
 }
 
 int subsearch(int *a, int i_b, int* result, int n, int iter,int *real_size){
-    for (int i = iter; i <n ; i*=2) {
+    for (int i = iter; i < n ; i*=2) {
         if (a[i] == i_b){
-            result[*(real_size)] = a[i];
+            result[*real_size] = a[i];
             (*real_size)++;
             return i;
         }
         if (a[i] > i_b){
             if(bin_search(a, i/2, i, i_b)){
-                result[*(real_size)] = i_b;
+                result[*real_size] = i_b;
                 (*real_size)++;
             }
             return i;
         } else {
-            if (i*2 >=n){
+            if (i*2 >= n){
                 if(bin_search(a, i, n-1, i_b)){
-                    result[*(real_size)] = i_b;
+                    result[*real_size] = i_b;
                     (*real_size)++;
                 }
                 return i;
@@ -67,14 +67,14 @@ int main() {
     int *a = new int[n];
     int *b = new int[m];
     int *result = new int[m];
-    for (int i = 0; i <n ; ++i) {
+    for (int i = 0; i < n ; ++i) {
         std::cin >> a[i];
     }
-    for (int i = 0; i <m ; ++i) {
-        std::cin>>b[i];
+    for (int i = 0; i < m ; ++i) {
+        std::cin >> b[i];
     }
     search(a, b, result, n, m, &real_size);
-    for (int j = 0; j <real_size; ++j) {
+    for (int j = 0; j < real_size; ++j) {
         std::cout << result[j] << ' ';
     }
     delete[](a);

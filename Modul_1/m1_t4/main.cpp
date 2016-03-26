@@ -8,14 +8,16 @@
 
 class Stack {
 public:
-    Stack():  head(NULL), size(0), real_size(0) {}
-    Stack(int n): head(new int[n]) ,size(n), real_size(0) {}
+   // Stack():  head(NULL), size(0), real_size(0) {}
+   // Stack(int n): head(new int[n]) ,size(n), real_size(0) {}
+    Stack(int n = 2): head(new int[n]) ,size(n), real_size(0) {}
     ~Stack();
     void Push(int);
     int Pop();
     bool is_Empty();
     int Real_size();
     int Size();
+    int *Resize(int *);
 
 private:
     int* head;
@@ -23,10 +25,23 @@ private:
     int real_size;
 };
 
+int* Stack::Resize(int *head) {
+    int *resize = new int[size*2];
+    for (int i = 0; i < size ; ++i) {
+        resize[i] = head[i];
+    }
+    size *= 2;
+    delete[](head);
+    return resize;
+
+}
 Stack::~Stack() {
     delete[](head);
 }
 void Stack::Push(int n) {
+    if (real_size == size){
+        head = Resize(head);
+    }
     head[real_size] = n;
     real_size++;
 }
@@ -53,7 +68,7 @@ int Stack::Size() {
 
 class Queue{
 public:
-    Queue(int n);
+    Queue();
     ~Queue();
 
     void Enqueue(int data);
@@ -67,10 +82,8 @@ private:
 Queue::~Queue() {
     left->~Stack();
     right->~Stack();
-//    delete(left);
-//    delete(right);
 }
-Queue::Queue(int n) : left(new Stack(n)), right(new Stack(n)) {}
+Queue::Queue() : left(new Stack()), right(new Stack()) {}
 
 void Queue::Enqueue(int data) {
     if (left->Real_size() < left->Size()) {
@@ -103,7 +116,7 @@ int main() {
     int n = 0;
     std::cin >> n;
     int num_operation = 0, number = 0, i_result;
-    Queue queue(n);
+    Queue queue;
     for (int i = 0; i < n; ++i) {
         std::cin >> num_operation >> number ;
         switch ( num_operation ) {

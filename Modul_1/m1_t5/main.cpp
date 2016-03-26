@@ -9,6 +9,7 @@
 #include <iostream>
 #include "stdio.h"
 #include <string.h>
+#include <assert.h>
 
 class Stack{
 public:
@@ -36,12 +37,16 @@ void Stack::Push(char ch) {
 }
 
 char Stack::Pop() {
-    if (!IsEmpty()){
-        real_size--;
-        char ch = buffer[real_size];
-        return ch;
-    } else
-        return -1;
+//    if (!IsEmpty()){
+//        real_size--;
+//        char ch = buffer[real_size];
+//        return ch;
+//    } else
+//        return -1;
+    assert(!IsEmpty());
+    real_size--;
+    char ch = buffer[real_size];
+    return ch;
 
 }
 
@@ -53,10 +58,12 @@ bool Stack::IsEmpty() {
 }
 
 char Stack::GetTop() {
-    if(IsEmpty())
-        return -1;
-    else
-        return buffer[real_size -1];
+//    if(IsEmpty())
+//        return -1;
+//    else
+//        return buffer[real_size - 1];
+    assert(!IsEmpty());
+    return  buffer[real_size - 1];
 }
 
 
@@ -94,15 +101,12 @@ bool detect (char* str1, char* str2, size_t len){
 
 int main() {
     char *str1(new char[10001]), *str2(new char[10001]);
-    int i;
-    i = scanf("%s%s", str1, str2);
+    int i = scanf("%s%s", str1, str2);
     if (i!=2 || strlen(str1)!= strlen(str2) ){
-        printf("NO");
-        delete[](str1);
-        delete[](str2);
-        return 0;
+        std:: cout << "NO";
+    } else {
+        std::cout << (detect(str1, str2, strlen(str1)) ? "YES" : "NO");
     }
-    std::cout << (detect(str1, str2, strlen(str1)) ? "YES" : "NO");
     delete[](str1);
     delete[](str2);
     return 0;
