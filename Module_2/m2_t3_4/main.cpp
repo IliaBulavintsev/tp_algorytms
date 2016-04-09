@@ -47,16 +47,31 @@ int count(Point *point, int size){
     heapSort(point, size);
     for (int i = 0; i < size; ++i) {
         Point tmp = point[i];
-        if(tmp._val == point[i]._val && !tmp._isEnd && point[i]._isEnd)
-            break;
-        if (tmp._isEnd)
-            fl--;
-        else fl++;
-        if (fl == 1)
-             start = tmp._val;
-        if (fl == 2 || fl == 0){
-            result+= tmp._val - start;
+        if (fl == 0 && !tmp._isEnd){
+            start = tmp._val;
+            fl++;
+            continue;
         }
+        if (fl == 1 && !tmp._isEnd){
+            fl++;
+            result += tmp._val - start;
+            continue;
+        }
+        if (fl == 2 && tmp._isEnd){
+            start = tmp._val;
+            fl--;
+            continue;
+        }
+        if (fl == 1 && tmp._isEnd){
+            result+= tmp._val - start;
+            start = tmp._val;
+            fl--;
+            continue;
+        }
+        if (tmp._isEnd){
+            fl--;
+        } else
+            fl++;
 
     }
     return result;
