@@ -37,17 +37,12 @@ void Stack::Push(char ch) {
 }
 
 char Stack::Pop() {
-//    if (!IsEmpty()){
-//        real_size--;
-//        char ch = buffer[real_size];
-//        return ch;
-//    } else
-//        return -1;
-    assert(!IsEmpty());
-    real_size--;
-    char ch = buffer[real_size];
-    return ch;
-
+    if (!IsEmpty()){
+        real_size--;
+        char ch = buffer[real_size];
+        return ch;
+    } else
+        return -1;
 }
 
 
@@ -58,12 +53,10 @@ bool Stack::IsEmpty() {
 }
 
 char Stack::GetTop() {
-//    if(IsEmpty())
-//        return -1;
-//    else
-//        return buffer[real_size - 1];
-    assert(!IsEmpty());
-    return  buffer[real_size - 1];
+    if(IsEmpty())
+        return -1;
+    else
+        return buffer[real_size - 1];
 }
 
 

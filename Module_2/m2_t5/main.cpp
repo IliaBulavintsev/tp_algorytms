@@ -2,61 +2,55 @@
 #include <vector>
 #include <stdint.h>
 
-template <typename T>
-T Merge(std::vector<T> *a, std::vector<T> *b, unsigned long na, unsigned long nb, std::vector<T> *c){
-    T res = 0;
-    unsigned long i = 0, j = 0;
-    while (i < na && j < nb){
-        if (a[i] <= b[j]){
-            c[i + j] = a[i];
+
+void merge(std::vector<int64_t> &a, unsigned long a_start, unsigned long a_end, unsigned long b_start, unsigned long b_end, std::vector<int64_t> &c, int64_t &counter) {
+
+    unsigned long i=a_start, j=b_start, k = 0;
+
+    for (;i < a_end && j < b_end;) {
+        if (a.at(i) <= a.at(j)) {
+            c[k] = a.at(i);
+            ++k;
             ++i;
-            ++res;
         } else {
-            c[i + j] = b[i];
-            ++j;
-            ++res;
-        }
-    }
-    if (i < na){
-        while (i < na){
-            c[i + j] = a[i];
-            ++i;
-        }
-    }
-    if (j < nb){
-        while (j < nb){
-            c[i + j] = a[j];
+            counter += a_end - i;
+            c[k] = a.at(j);
+            ++k;
             ++j;
         }
     }
-    return res;
-}
-template <typename T>
-T MergeSort(std::vector<T> *arr, unsigned long size){
-    T res = 0;
-    if (size < 2)
-        return 0;
-    if (size == 2){
-        if (arr[0] > arr[1]){
-            std::swap(arr[0], arr[1]);
-            return  1;
-        } else {
-            return 0;
-        }
+
+    if (i==a_end) {
+        for (;j < b_end;++j) { c[k] = a.at(j); ++k; }
+    } else {
+        //counter+= b_end - b_start;
+        for (;i < a_end;++i) { c[k] = a.at(i); ++k;}
     }
-    res += MergeSort(arr, size/2);
-    res += MergeSort(arr + size/2, size - size/2);
-    std::vector<T> arr_merge(size);
-    res +=Merge(arr,  arr + size/2, size/2, size - size/2, &arr_merge);
-    return res;
 }
 
+void merge_sort(std::vector<int64_t> &data, unsigned long start, unsigned long end, std::vector<int64_t> &buffer, int64_t &counter) {
+    unsigned long size = end - start;
+//    int64_t ret = 0;
+    if (size < 2) return ;
+    merge_sort(data, start, end - size / 2, buffer, counter);
+    merge_sort(data, end - size / 2, end, buffer, counter);
+
+    merge(data, 0, end - size / 2, end - size / 2, end, buffer, counter);
+    for (size_t pos = start; pos < end; ++ pos) {
+        data[pos] = buffer[pos];
+    }
+}
 int main() {
     std::vector<int64_t> v;
-    int64_t buf;
-    while(std::cin >> buf){
-        v.push_back(buf);
+    std::vector<int64_t > buf;
+    int64_t buff;
+    while(std::cin >> buff){
+        v.push_back(buff);
+        buf.push_back(0);
     }
-   std::cout << MergeSort(&v, v.size());
+    int64_t ret = 0;
+    merge_sort( v, 0, v.size(), buf, ret);
+    std::cout << ret;
+
     return 0;
 }

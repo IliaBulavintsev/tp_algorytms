@@ -31,10 +31,6 @@ void heapSort(T *arr, int size){
 
 long long count(long long* arr, int size){
     heapSort(arr, size);
-//    for (int i = 0; i <size ; ++i) {
-//        std::cout<< arr[i]<<" ";
-//    }
-//    std::cout<<"_________\n";
     long long result = 0;
     for (int j = size - 1; j > 0 ;) {
         long long a = arr[j];

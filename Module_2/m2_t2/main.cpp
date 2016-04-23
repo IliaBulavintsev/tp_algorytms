@@ -1,114 +1,92 @@
 #include <iostream>
+#include <stdint.h>
+#include <assert.h>
+
 class Heap{
 public:
-    Heap(int n): size(n), buffer(new long long[n]) {}
-    ~Heap() {
-        delete[](buffer);
-    }
-    int GetSize(){ return size; }
-    long GetElem(int n){ return buffer[n]; }
-    void SetElem (long long elem,int n) { buffer[n] = elem; }
-    void AddElem (long long elem) { buffer[size] = elem; size++; }
-    void SiftDownMinMax(int, int);
-    int GetMinIndex(int, int);
-    void SiftDownMaxMin(int, int);
-    int GetMaxIndex(int, int);
-    long long DelLastElem ();
-private:
-    int size;
-    long long *buffer;
+    Heap(int64_t s): size(s), realsize(s), heap(new int64_t[s]) {}
+    ~Heap(){}
+    void AddElem(int64_t elem);
+    int64_t DelElem();
+    int64_t size;
+    int64_t realsize;
+    int64_t *heap;
 };
 
-long long Heap::DelLastElem() {
-    size--;
-    return buffer[size];
+void Heap::AddElem(int64_t elem) {
+    heap[realsize] = elem;
+    realsize++;
 }
-int Heap::GetMinIndex(int left, int right) {
-    if (GetElem(left) >= GetElem(right))
-        return right;
-    else
-        return left;
+
+int64_t Heap::DelElem() {
+    int64_t res = heap[0];
+    realsize--;
+    heap++;
+    return res;
 }
-void Heap::SiftDownMinMax(int n, int size) {
-    int max_index = n;
-    long long tmp = buffer[n];
-    while (true){
-        int left = n * 2 + 1;
-        int right = n * 2 + 2;
-        if ( left < size && right >= size && buffer[left] < tmp)
-            max_index = left;
-        if (left < size && right < size && buffer[GetMinIndex(left, right)] < tmp)
-            max_index = GetMinIndex(left, right);
-        if (max_index == n)
+
+template <typename T>
+void heap_insert(T *a, int64_t n, int64_t x) {
+    a[n] = x;
+    for (int64_t i = n; i > 1;) {
+        if (a[i] > a[i/2]) {
+            std::swap(a[i], a[i/2]);
+            i = i/2;
+        } else {
             break;
-        buffer[n] = buffer[max_index];
-        buffer[max_index] = tmp;
-        n = max_index;
-    }
-}
-int Heap::GetMaxIndex(int left, int right) {
-    if (GetElem(left) >= GetElem(right))
-        return left;
-    else
-        return right;
-}
-void Heap::SiftDownMaxMin(int n, int size) {
-    int max_index = n;
-    long long tmp = buffer[n];
-    while (true){
-        int left = n * 2 + 1;
-        int right = n * 2 + 2;
-        if ( left < size && right >= size && buffer[left] > tmp)
-            max_index = left;
-        if (left < size && right < size && buffer[GetMaxIndex(left, right)] > tmp)
-            max_index = GetMaxIndex(left, right);
-        if (max_index == n)
-            break;
-        buffer[n] = buffer[max_index];
-        buffer[max_index] = tmp;
-        n = max_index;
+        }
     }
 }
 
-long long count (Heap *heap){
-    long long result = 0;
-    while (heap->GetSize() > 1) {
-        long long a = heap->DelLastElem();
-        long long b = heap->DelLastElem();
-        result+= a;
-        result+= b;
+template <typename T>
+void heap_pop(T *a, int64_t n) {
+    std::swap(a[n-1],a[0]);
+    for (int64_t i = 0; 2*i < n;) {
+        i *= 2;
+        if (i+1 < n && a[i] < a[i+1]) {
+            i += 1;
+        }
+        if (a[i/2] < a[i]) {
+            std::swap(a[i/2], a[i]);
+        }
+    }
+}
+
+template <typename T>
+void heap_sort(T *data, int64_t n) {
+    T *buff = new T[n];
+    for (int64_t i = 0; i < n; ++i) {
+        heap_insert(buff, i, data[i]);
+    }
+    for (int64_t i = 0; i < n; ++i) {
+        data[n-1-i] = buff[0];
+        heap_pop(buff, n - i);
+    }
+    delete [] buff;
+}
+
+
+int64_t count (Heap *heap){
+    int64_t res = 0;
+    while (heap->realsize > 1){
+        int64_t a = heap->DelElem();
+        int64_t b = heap->DelElem();
+        res+= a + b;
         heap->AddElem(a+b);
-        heap->SiftDownMaxMin(heap->GetSize() / 2 - 1, heap->GetSize());
+        heap_sort(heap->heap, heap->realsize);
     }
-    return result;
+    return res;
 }
-
 int main() {
-    int n;
+    int64_t n;
     std::cin >> n;
     Heap *heap = new Heap(n);
     for (int i = 0; i < n; ++i) {
-        long long elem = 0;
+        int64_t elem;
         std::cin >> elem;
-        if (elem < 0){
-            elem = 0 - elem;
-        }
-       heap->SetElem(elem, i);
+        heap->heap[i] = elem;
     }
-    //Create Heap Min
-    for (int k = heap->GetSize() / 2 - 1; k >= 0; --k) {
-        heap->SiftDownMinMax(k, heap->GetSize());
-    }
-    //Heap Sort Max
-    for (int l = heap->GetSize() - 1; l >= 1 ; --l) {
-        long long tmp = heap->GetElem(0);
-        heap->SetElem(heap->GetElem(l), 0);
-        heap->SetElem(tmp, l);
-        heap->SiftDownMinMax(0, l);
-    }
-//    for (int j = 0; j < heap->GetSize(); ++j) {
-//        std::cout << heap->GetElem(j) << " ";
-//    }
+    heap_sort(heap->heap, n);
     std::cout << count(heap);
 
     return 0;

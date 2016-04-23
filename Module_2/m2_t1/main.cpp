@@ -8,11 +8,12 @@
 #include <iostream>
 #include "assert.h"
 
+template <class a_type>
 class Box {
 public:
     Box(){ }
     ~Box() { }
-    void Set(int x, int y, int z, int index) {
+    void Set(a_type x, a_type y, a_type z, a_type index) {
         _x[0] = x;
         _x[1] = y;
         _x[2] = z;
@@ -23,17 +24,18 @@ public:
         return  (this->_x[0] < right._x[0] && this->_x[1] < right._x[1] && this->_x[2] < right._x[2]);
     }
     void Print_Index();
-    int _x[3];
-    int _index;
+    a_type _x[3];
+    a_type _index;
 };
 
-void Box::Print_Index() {
+template <class a_type>
+void Box<a_type>::Print_Index() {
      std::cout << _index << " ";
 }
 
 template <typename T>
 void insertion_sort(T *arr, int size){
-    for (int i = 0; i < size; ++i) {
+    for (int i = 1; i < size; ++i) {
         T tmp = arr[i];
         int k = i;
         for (; k > 0 && tmp < arr[k-1] ; --k) {
@@ -47,7 +49,7 @@ int main(){
     int n;
     std::cin >> n;
     assert(n > 0);
-    Box *boxes = new Box[n];
+    Box<int> *boxes = new Box<int>[n];
     for (int i = 0; i < n; ++i) {
         int x, y, z;
         std::cin >> x >> y >> z;

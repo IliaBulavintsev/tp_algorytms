@@ -20,32 +20,35 @@ void Heap::AddElem(long long elem) {
     heap--;
     heap[0] = elem;
     realsize++;
-    SiftDown(0);
 }
 
 long long Heap::DelFirstElem() {
     assert(realsize > 0);
+    SiftDown(0);
     long long ret = heap[0];
     realsize--;
     heap++;
+    SiftDown(0);
     return ret;
 }
 
 void Heap::SiftDown(int index) {
-    for (int i = index; i < realsize - 2;) {
+    for (int i = index; i < realsize;) {
         int tmp = i;
         int left = i*2 + 1;
         int right = i*2 + 2;
-        if (heap[left] < heap[tmp] && left < realsize){
+        if (left < realsize && heap[left] < heap[tmp]){
             i = left;
         }
-        if (heap[right] < heap[tmp] && right < realsize){
+        if (right < realsize && heap[right] < heap[tmp] && heap[right] < heap[left]){
             i = right;
         }
         if (tmp == i)
             break;
-        else
+        else{
             std::swap(heap[i], heap[tmp]);
+        }
+
 
     }
 }
@@ -78,11 +81,14 @@ void heapSort(T *arr, int size){
         siftDown(arr, 0, size - j - 1);
     }
 }
+
 long long count(Heap *heap){
     long long res = 0;
     long long a, b;
     while (heap->realsize > 1){
+        //heap->SiftDown(0);
         a = heap->DelFirstElem();
+        //heap->SiftDown(0);
         b = heap->DelFirstElem();
         res+= a + b;
         heap->AddElem(a+b);

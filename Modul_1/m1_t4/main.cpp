@@ -8,8 +8,6 @@
 
 class Stack {
 public:
-   // Stack():  head(NULL), size(0), real_size(0) {}
-   // Stack(int n): head(new int[n]) ,size(n), real_size(0) {}
     Stack(int n = 2): head(new int[n]) ,size(n), real_size(0) {}
     ~Stack();
     void Push(int);
@@ -17,7 +15,7 @@ public:
     bool is_Empty();
     int Real_size();
     int Size();
-    int *Resize(int *);
+    void Resize(int *);
 
 private:
     int* head;
@@ -25,22 +23,22 @@ private:
     int real_size;
 };
 
-int* Stack::Resize(int *head) {
+void Stack::Resize(int *head) {
     int *resize = new int[size*2];
     for (int i = 0; i < size ; ++i) {
         resize[i] = head[i];
     }
     size *= 2;
     delete[](head);
-    return resize;
+    this->head = resize;
 
 }
 Stack::~Stack() {
     delete[](head);
 }
 void Stack::Push(int n) {
-    if (real_size == size){
-        head = Resize(head);
+    if (real_size == size - 1){
+        Resize(head);
     }
     head[real_size] = n;
     real_size++;
@@ -105,7 +103,6 @@ int Queue::Dequeue() {
 }
 
 void Queue::Moove_data() {
-//    for (int i = 0; i < left->Real_size(); ++i) {
     while (!left->is_Empty()) {
         right->Push(left->Pop());
     }
